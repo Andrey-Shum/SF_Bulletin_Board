@@ -22,4 +22,46 @@ rad.json
 #Test results file
 TestResults.xml
 #
-/zvenv
+
+# Игнорировать SQLite базу данных
+*.sqlite3
+*.db
+*.sqlite
+*.sqlite-journal
+
+# Другие СУБД
+*.dump
+*.backup
+*.psql
+*.mysql
+
+# Игнорировать файлы миграций Django (кроме __init__.py)
+*/migrations/*
+!*/migrations/__init__.py
+
+# Игнорировать скрытые файлы
+.DS_Store
+.env/
+.venv/
+.zvenv/
+
+# Игнорировать кэш Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Игнорировать виртуальное окружение
+env/
+venv/
+zvenv/
+
+# Игнорировать IDE-файлы
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Логи и временные файлы
+*.log
+*.tmp
+
