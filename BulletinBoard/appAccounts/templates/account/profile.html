@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<h1>Мой профиль</h1>
+
+<div>
+    <h3>Информация о пользователе</h3>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Имя пользователя:</strong> {{ user.username|default:"Не указано" }}</p>
+</div>
+
+<div>
+    <h3>Действия</h3>
+    <p><a href="{% url 'account_email' %}">Управление email</a></p>
+    <p><a href="{% url 'account_change_password' %}">Изменить пароль</a></p>
+    <p><a href="{% url 'account_logout' %}">Выйти</a></p>
+</div>
+{% endblock %} 

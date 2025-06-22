@@ -67,12 +67,11 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                # `allauth` обязательно нужен этот процессор
+                # 'django.template.context_processors.request',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
-                # `allauth` обязательно нужен этот процессор
-                'django.template.context_processors.request',
             ],
         },
     },
@@ -152,10 +151,9 @@ AUTHENTICATION_BACKENDS = [
 учётной записи.
 '''
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+# обязательные поля для регистрации
+ACCOUNT_LOGIN_METHODS = {'email'} # методы входа в систему
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # 'None' - проверка email — отсутствует;
 # 'mandatory' — не пускать пользователя на сайт до момента подтверждения почты;
@@ -163,7 +161,12 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # пользователь может залогиниться на сайте без подтверждения почты.
 # Чтобы allauth распознал нашу форму как ту, что должна выполняться вместо
 # формы по умолчанию, необходимо добавить.
-ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
+ACCOUNT_FORMS = {"signup": "appAccounts.forms.CustomSignupForm"}
+
+# Настройки редиректов allauth
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 
 # Блок кода настроек нашего проекта работы с почтой (Yandex-почтой)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -198,9 +201,6 @@ EMAIL_USE_TLS = False
 # (зависит от почтового сервера,
 # смотрите документацию по настройке работы с сервером по SMTP)
 EMAIL_USE_SSL = True
-# необходимость использования SSL
-# (зависит от почтового сервера,
-# смотрите документацию по настройке работы с сервером по SMTP)
 
 DEFAULT_FROM_EMAIL = "AndreyTestSF@yandex.ru"
 # Почтовый адрес отправителя по умолчанию
