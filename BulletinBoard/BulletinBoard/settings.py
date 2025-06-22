@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-(*6-pjdm34x85g@rohl+-p8%tv1e_qkms9&r4qhupb#)*b$%&e
 DEBUG = True
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
 
 # Application definition
 
@@ -37,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.yandex',
     # регистрация приложения appAccounts
     'appAccounts.apps.AppaccountsConfig',
 ]
@@ -49,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'BulletinBoard.urls'
@@ -63,6 +70,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                # `allauth` обязательно нужен этот процессор
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -122,3 +132,87 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Этого раздела может не быть, добавьте его в указанном виде.
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Настройки почтового сервера
+'''
+Первые два параметра указывают на то, что поле email является обязательным
+и уникальным.
+Третий, наоборот, — говорит, что username необязательный.
+Следующий параметр указывает, что аутентификация будет происходить
+посредством электронной почты.
+Напоследок мы указываем, что верификация почты отсутствует.
+
+Обычно на почту отправляется подтверждение аккаунта,
+после подтверждения которого восстанавливается полная функциональность
+учётной записи.
+'''
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# 'None' - проверка email — отсутствует;
+# 'mandatory' — не пускать пользователя на сайт до момента подтверждения почты;
+# 'optional' — сообщение о подтверждении почты будет отправлено, но
+# пользователь может залогиниться на сайте без подтверждения почты.
+# Чтобы allauth распознал нашу форму как ту, что должна выполняться вместо
+# формы по умолчанию, необходимо добавить.
+ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
+
+# Блок кода настроек нашего проекта работы с почтой (Yandex-почтой)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# 'django.core.mail.backends.console.EmailBackend' - для писем в терминал
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# класс отправителя сообщений (у нас установлено значение по умолчанию,
+# а значит, эта строчка не обязательна)
+EMAIL_HOST = 'smtp.yandex.ru'
+# Хост почтового сервера — это адрес или доменное имя сервера, который
+# обрабатывает и отправляет электронную почту.
+# Хост почтового сервера может быть использован как для отправки, так и для
+# получения почты.
+EMAIL_PORT = 465
+"""
+Порт, на который почтовый сервер принимает письма, называется почтовым портом.
+Один из самых распространенных почтовых портов - это порт 25, который
+используется для передачи электронной почты
+по протоколу SMTP (Simple Mail Transfer Protocol).
+Однако, существуют и другие почтовые порты, такие как порт 587,
+который используется для SMTP с шифрованием TLS (Transport Layer Security),
+и порт 465,
+который используется для SMTP с шифрованием SSL (Secure Sockets Layer).
+Использование конкретного почтового порта зависит от настроек и требований
+почтового сервера.
+"""
+EMAIL_HOST_USER = "AndreyTestSF"
+# логин пользователя почтового сервера
+EMAIL_HOST_PASSWORD = "zuqvkobqbkixymje"  # noqa
+# пароль пользователя почтового сервера
+EMAIL_USE_TLS = False
+# необходимость использования TLS
+# (зависит от почтового сервера,
+# смотрите документацию по настройке работы с сервером по SMTP)
+EMAIL_USE_SSL = True
+# необходимость использования SSL
+# (зависит от почтового сервера,
+# смотрите документацию по настройке работы с сервером по SMTP)
+
+DEFAULT_FROM_EMAIL = "AndreyTestSF@yandex.ru"
+# Почтовый адрес отправителя по умолчанию
+# Последняя строчка будет использоваться как значение по умолчанию
+# для поля from в письме.
+# То есть будет отображаться в поле «отправитель» у получателя письма.
+
+SERVER_EMAIL = "AndreyTestSF@yandex.ru"
+# SERVER_EMAIL содержит адрес почты, от имени которой будет отправляться письмо
+# при вызове mail_admins и mail_manager.
+# А переменная MANAGERS будет хранить список имён менеджеров и адресов
+# их почтовых ящиков.
+
+EMAIL_SUBJECT_PREFIX = 'Bulletin Board MMORPG'
+
